@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订阅链接二维码生成器</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+            background-color: #0a0a0f;
+            color: #e4e4e7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4aa, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #71717a;
+        }
+
+        .card {
+            background-color: #12121a;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #27272a;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: #71717a;
+            margin-bottom: 8px;
+        }
+
+        .input-area {
+            width: 100%;
+            min-height: 120px;
+            padding: 14px;
+            background-color: #1a1a24;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            color: #e4e4e7;
+            font-family: inherit;
+            font-size: 13px;
+            resize: vertical;
+            transition: all 0.2s ease;
+        }
+
+        .input-area:focus {
+            outline: none;
+            border-color: #00d4aa;
+            box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
+        }
+
+        .input-area::placeholder {
+            color: #52525b;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .generate-btn {
+            flex: 1;
+            height: 48px;
+            background: linear-gradient(135deg, #00d4aa, #6366f1);
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0f;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .generate-btn:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .clear-btn {
+            flex: 0 0 auto;
+            width: 80px;
+            height: 48px;
+            background-color: transparent;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            color: #71717a;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .result-area {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .result-area.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .qr-item {
+            background-color: #1a1a24;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #27272a;
+        }
+
+        .qr-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .qr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .qr-index {
+            font-size: 12px;
+            color: #00d4aa;
+            font-weight: 500;
+        }
+
+        .qr-link {
+            font-size: 11px;
+            color: #71717a;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .qr-link:hover {
+            color: #00d4aa;
+        }
+
+        .qr-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 16px;
+            background-color: #ffffff;
+            border-radius: 6px;
+        }
+
+        .qr-wrapper canvas {
+            width: 200px !important;
+            height: 200px !important;
+            display: block !important;
+        }
+
+        .qr-wrapper img {
+            display: none !important;
+        }
+
+        .qr-actions {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .copy-btn {
+            padding: 6px 16px;
+            background-color: transparent;
+            border: 1px solid #27272a;
+            border-radius: 4px;
+            color: #71717a;
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            border-color: #00d4aa;
+            color: #00d4aa;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #00d4aa;
+            color: #0a0a0f;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .empty-tip {
+            text-align: center;
+            color: #52525b;
+            font-size: 13px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>订阅链接二维码生成器</h1>
+            <p>支持 Clash / Surge / Shadowrocket / Quantumult</p>
+        </div>
+
+        <div class="card">
+            <label class="input-label" for="sub-input">订阅链接</label>
+            <textarea
+                id="sub-input"
+                class="input-area"
+                placeholder="粘贴 Clash / Surge / Shadowrocket 订阅链接...
+支持多行输入，每行一个链接"></textarea>
+            <div class="btn-group">
+                <button class="generate-btn" id="generate-btn">生成二维码</button>
+                <button class="clear-btn" id="clear-btn">清空</button>
+            </div>
+
+            <div class="result-area" id="result-area">
+                <!-- 二维码将在这里生成 -->
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">已复制到剪贴板</div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const inputEl = document.getElementById('sub-input');
+        const btnEl = document.getElementById('generate-btn');
+        const resultArea = document.getElementById('result-area');
+        const toast = document.getElementById('toast');
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('已复制到剪贴板');
+            }).catch(() => {
+                showToast('复制失败');
+            });
+        }
+
+        function createQRItem(text, index, total) {
+            const item = document.createElement('div');
+            item.className = 'qr-item';
+
+            // 截断显示的链接
+            const displayUrl = text.length > 40 ? text.substring(0, 40) + '...' : text;
+
+            item.innerHTML = `
+                <div class="qr-header">
+                    <span class="qr-index">链接 ${index}${total > 1 ? '/' + total : ''}</span>
+                    <span class="qr-link" title="${text}">${displayUrl}</span>
+                </div>
+                <div class="qr-wrapper" id="qr-wrapper-${index}"></div>
+                <div class="qr-actions">
+                    <button class="copy-btn">复制链接</button>
+                </div>
+            `;
+
+            // 生成二维码
+            const wrapper = item.querySelector(`#qr-wrapper-${index}`);
+            new QRCode(wrapper, {
+                text: text,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            // 复制按钮事件
+            const copyBtn = item.querySelector('.copy-btn');
+            copyBtn.addEventListener('click', () => copyToClipboard(text));
+
+            // 点击链接也可复制
+            const linkEl = item.querySelector('.qr-link');
+            linkEl.addEventListener('click', () => copyToClipboard(text));
+
+            return item;
+        }
+
+        function generateQR() {
+            const text = inputEl.value.trim();
+
+            if (!text) {
+                showToast('请输入订阅链接');
+                return;
+            }
+
+            // 分割多行
+            const links = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+            if (links.length === 0) {
+                showToast('请输入有效的链接');
+                return;
+            }
+
+            // 清空结果区域
+            resultArea.innerHTML = '';
+            resultArea.classList.add('active');
+
+            // 为每个链接生成二维码
+            links.forEach((link, index) => {
+                const qrItem = createQRItem(link, index + 1, links.length);
+                resultArea.appendChild(qrItem);
+            });
+        }
+
+        btnEl.addEventListener('click', generateQR);
+
+        // 清空按钮
+        const clearBtnEl = document.getElementById('clear-btn');
+        clearBtnEl.addEventListener('click', () => {
+            inputEl.value = '';
+            resultArea.innerHTML = '';
+            resultArea.classList.remove('active');
+            inputEl.focus();
+        });
+
+        // 支持 Ctrl+Enter 提交
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generateQR();
+            }
+        });
+    </script>
+</body>
+</html>
