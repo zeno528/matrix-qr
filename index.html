@@ -59,10 +59,42 @@
         }
 
         .input-label {
-            display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 13px;
             color: #71717a;
             margin-bottom: 8px;
+        }
+
+        .paste-btn {
+            padding: 4px 10px;
+            background-color: rgba(0, 212, 170, 0.15);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            border-radius: 6px;
+            color: #00d4aa;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .paste-btn:hover {
+            background-color: rgba(0, 212, 170, 0.25);
+            border-color: #00d4aa;
+        }
+
+        .paste-btn:active {
+            transform: scale(0.95);
+        }
+
+        .paste-btn svg {
+            width: 14px;
+            height: 14px;
         }
 
         .input-area {
@@ -269,7 +301,16 @@
         </div>
 
         <div class="card">
-            <label class="input-label" for="sub-input">订阅链接</label>
+            <div class="input-label">
+                <span>订阅链接</span>
+                <button class="paste-btn" id="paste-btn" title="从剪贴板粘贴">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                    </svg>
+                    粘贴
+                </button>
+            </div>
             <textarea
                 id="sub-input"
                 class="input-area"
@@ -393,6 +434,29 @@
         inputEl.addEventListener('keydown', (e) => {
             if (e.ctrlKey && e.key === 'Enter') {
                 generateQR();
+            }
+        });
+
+        // 粘贴按钮功能
+        const pasteBtn = document.getElementById('paste-btn');
+        pasteBtn.addEventListener('click', async () => {
+            try {
+                const clipText = await navigator.clipboard.readText();
+                if (clipText) {
+                    // 如果输入框已有内容，追加到后面；否则直接填充
+                    if (inputEl.value.trim()) {
+                        inputEl.value = inputEl.value.trim() + '\n' + clipText;
+                    } else {
+                        inputEl.value = clipText;
+                    }
+                    showToast('已从剪贴板粘贴');
+                    inputEl.focus();
+                } else {
+                    showToast('剪贴板为空');
+                }
+            } catch (err) {
+                // 权限被拒绝或不支持
+                showToast('无法访问剪贴板，请手动粘贴');
             }
         });
     </script>
