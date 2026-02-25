@@ -113,7 +113,7 @@
             color: #e4e4e7;
             font-family: inherit;
             font-size: 13px;
-            resize: vertical;
+            resize: none;
             transition: all 0.2s ease;
         }
 
@@ -125,6 +125,27 @@
 
         .input-area::placeholder {
             color: #52525b;
+        }
+
+        .input-area::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .input-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .input-area::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .input-area::-webkit-scrollbar-thumb:hover {
+            background: #444;
+        }
+
+        .input-area::-webkit-resizer {
+            display: none;
         }
 
         .btn-group {
