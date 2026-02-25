@@ -233,13 +233,23 @@
         }
 
         .qr-wrapper canvas {
-            width: 200px !important;
-            height: 200px !important;
+            max-width: 100%;
+            height: auto;
             display: block !important;
         }
 
         .qr-wrapper img {
             display: none !important;
+        }
+
+        .download-btn {
+            background-color: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3) !important;
+        }
+
+        .download-btn:hover {
+            border-color: #6366f1 !important;
+            color: #6366f1 !important;
         }
 
         .qr-actions {
@@ -329,7 +339,8 @@
 
     <div class="toast" id="toast">已复制到剪贴板</div>
 
-    <script src="https://cdn.bootcdn.net/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- qrcode-generator: 支持超长内容的二维码库 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script>
         const inputEl = document.getElementById('sub-input');
         const btnEl = document.getElementById('generate-btn');
@@ -367,23 +378,71 @@
                 <div class="qr-wrapper" id="qr-wrapper-${index}"></div>
                 <div class="qr-actions">
                     <button class="copy-btn">复制链接</button>
+                    <button class="copy-btn download-btn" style="margin-left: 8px;">下载图片</button>
                 </div>
             `;
 
-            // 生成二维码
             const wrapper = item.querySelector(`#qr-wrapper-${index}`);
-            new QRCode(wrapper, {
-                text: text,
-                width: 256,
-                height: 256,
-                colorDark: '#000000',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M
-            });
+
+            try {
+                // 使用 qrcode-generator 库，支持超长内容
+                // typeNumber: 0 表示自动选择合适的版本
+                // errorCorrectionLevel: 'L' 低纠错级别，容纳更多数据
+                const qr = qrcode(0, 'L');
+                qr.addData(text);
+                qr.make();
+
+                // 创建 canvas 绘制二维码
+                const moduleCount = qr.getModuleCount();
+                const cellSize = Math.max(2, Math.floor(300 / moduleCount));
+                const size = moduleCount * cellSize;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // 绘制白色背景
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, size, size);
+
+                // 绘制二维码模块
+                ctx.fillStyle = '#000000';
+                for (let row = 0; row < moduleCount; row++) {
+                    for (let col = 0; col < moduleCount; col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                        }
+                    }
+                }
+
+                wrapper.appendChild(canvas);
+            } catch (err) {
+                wrapper.innerHTML = `
+                    <div style="color: #ef4444; padding: 20px; text-align: center; font-size: 13px;">
+                        二维码生成失败<br>
+                        <span style="font-size: 11px; color: #71717a;">${err.message || '内容过长或包含不支持的字符'}</span>
+                    </div>
+                `;
+                console.error('QRCode generation error:', err);
+            }
 
             // 复制按钮事件
             const copyBtn = item.querySelector('.copy-btn');
             copyBtn.addEventListener('click', () => copyToClipboard(text));
+
+            // 下载按钮事件
+            const downloadBtn = item.querySelector('.download-btn');
+            downloadBtn.addEventListener('click', () => {
+                const canvas = wrapper.querySelector('canvas');
+                if (canvas) {
+                    const link = document.createElement('a');
+                    link.download = `qrcode-${index}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    showToast('图片已下载');
+                }
+            });
 
             // 点击链接也可复制
             const linkEl = item.querySelector('.qr-link');
@@ -413,8 +472,8 @@
             resultArea.classList.add('active');
 
             // 为每个链接生成二维码
-            links.forEach((link, index) => {
-                const qrItem = createQRItem(link, index + 1, links.length);
+            links.forEach((link, idx) => {
+                const qrItem = createQRItem(link, idx + 1, links.length);
                 resultArea.appendChild(qrItem);
             });
         }
