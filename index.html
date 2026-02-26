@@ -14,7 +14,7 @@
     <link rel="icon" type="image/svg+xml" href="qr.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=optional" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -744,32 +744,54 @@
             // 截断显示的链接
             const displayUrl = text.length > 35 ? text.substring(0, 35) + '...' : text;
 
-            item.innerHTML = `
-                <div class="qr-header">
-                    <span class="qr-index">链接 ${index}${total > 1 ? ' / ' + total : ''}</span>
-                    <span class="qr-link" title="${text}" role="button" tabindex="0" aria-label="点击复制链接">${displayUrl}</span>
-                </div>
-                <div class="qr-wrapper" id="qr-wrapper-${index}" aria-label="二维码图片"></div>
-                <div class="qr-actions" role="group" aria-label="二维码操作">
-                    <button class="action-btn copy" aria-label="复制链接到剪贴板">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        复制链接
-                    </button>
-                    <button class="action-btn download" aria-label="下载二维码图片">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7 10 12 15 17 10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                        下载图片
-                    </button>
-                </div>
+            // 使用安全的 DOM 操作，避免 XSS
+            const header = document.createElement('div');
+            header.className = 'qr-header';
+
+            const indexSpan = document.createElement('span');
+            indexSpan.className = 'qr-index';
+            indexSpan.textContent = `链接 ${index}${total > 1 ? ' / ' + total : ''}`;
+
+            const linkSpan = document.createElement('span');
+            linkSpan.className = 'qr-link';
+            linkSpan.setAttribute('title', text);  // 安全设置属性
+            linkSpan.setAttribute('role', 'button');
+            linkSpan.setAttribute('tabindex', '0');
+            linkSpan.setAttribute('aria-label', '点击复制链接');
+            linkSpan.textContent = displayUrl;  // 安全设置文本
+
+            header.appendChild(indexSpan);
+            header.appendChild(linkSpan);
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'qr-wrapper';
+            wrapper.setAttribute('aria-label', '二维码图片');
+
+            const actions = document.createElement('div');
+            actions.className = 'qr-actions';
+            actions.setAttribute('role', 'group');
+            actions.setAttribute('aria-label', '二维码操作');
+            actions.innerHTML = `
+                <button class="action-btn copy" aria-label="复制链接到剪贴板">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    复制链接
+                </button>
+                <button class="action-btn download" aria-label="下载二维码图片">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    下载图片
+                </button>
             `;
 
-            const wrapper = item.querySelector(`#qr-wrapper-${index}`);
+            item.appendChild(header);
+            item.appendChild(wrapper);
+            item.appendChild(actions);
 
             try {
                 // 使用 qrcode-generator 库，支持超长内容
@@ -805,21 +827,25 @@
 
                 wrapper.appendChild(canvas);
             } catch (err) {
-                wrapper.innerHTML = `
-                    <div class="error-message">
-                        二维码生成失败
-                        <small>${err.message || '内容过长或包含不支持的字符'}</small>
-                    </div>
-                `;
+                // 安全创建错误消息
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = '二维码生成失败';
+
+                const errorSmall = document.createElement('small');
+                errorSmall.textContent = err.message || '内容过长或包含不支持的字符';
+
+                errorDiv.appendChild(errorSmall);
+                wrapper.appendChild(errorDiv);
                 console.error('QRCode generation error:', err);
             }
 
             // 复制按钮事件
-            const copyBtn = item.querySelector('.action-btn.copy');
+            const copyBtn = actions.querySelector('.action-btn.copy');
             copyBtn.addEventListener('click', () => copyToClipboard(text));
 
             // 下载按钮事件
-            const downloadBtn = item.querySelector('.action-btn.download');
+            const downloadBtn = actions.querySelector('.action-btn.download');
             downloadBtn.addEventListener('click', () => {
                 const canvas = wrapper.querySelector('canvas');
                 if (canvas) {
@@ -831,11 +857,10 @@
                 }
             });
 
-            // 点击链接也可复制
-            const linkEl = item.querySelector('.qr-link');
-            linkEl.addEventListener('click', () => copyToClipboard(text));
+            // 点击链接也可复制（直接使用已创建的 linkSpan）
+            linkSpan.addEventListener('click', () => copyToClipboard(text));
             // 键盘支持：Enter 键复制
-            linkEl.addEventListener('keydown', (e) => {
+            linkSpan.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     copyToClipboard(text);
