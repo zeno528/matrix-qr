@@ -20,82 +20,189 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-cyan: #22d3ee;
+            --primary-violet: #a78bfa;
+            --primary-rose: #fb7185;
+            --bg-dark: #09090b;
+            --bg-card: rgba(24, 24, 27, 0.7);
+            --bg-input: rgba(9, 9, 11, 0.6);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-glow: rgba(34, 211, 238, 0.3);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #52525b;
+        }
+
         body {
             font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background-color: #0a0a0f;
-            color: #e4e4e7;
+            background: var(--bg-dark);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 40px 24px;
+            padding: 48px 24px;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 动态背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% -20%, rgba(34, 211, 238, 0.15), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167, 139, 250, 0.12), transparent),
+                radial-gradient(ellipse 40% 30% at 50% 50%, rgba(251, 113, 133, 0.05), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* 网格背景 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
         }
 
+        /* 头部 */
         .header {
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px;
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, #00d4aa, #6366f1);
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-violet) 50%, var(--primary-rose) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-cyan), var(--primary-violet), transparent);
+            border-radius: 2px;
         }
 
         .header p {
-            font-size: 13px;
-            color: #71717a;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 16px;
         }
 
+        /* 主卡片 - 玻璃拟态 */
         .card {
-            background-color: #12121a;
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid #27272a;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px;
+            border: 1px solid var(--border-subtle);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03) inset,
+                0 20px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 100px -20px rgba(34, 211, 238, 0.1);
+            position: relative;
+            overflow: hidden;
         }
 
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        /* 输入区域标签 */
         .input-label {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 13px;
-            color: #71717a;
-            margin-bottom: 8px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 500;
         }
 
+        /* 粘贴按钮 */
         .paste-btn {
-            padding: 4px 10px;
-            background-color: rgba(0, 212, 170, 0.15);
-            border: 1px solid rgba(0, 212, 170, 0.3);
-            border-radius: 6px;
-            color: #00d4aa;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(167, 139, 250, 0.1));
+            border: 1px solid rgba(34, 211, 238, 0.2);
+            border-radius: 8px;
+            color: var(--primary-cyan);
             font-family: inherit;
             font-size: 12px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .paste-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .paste-btn:hover::before {
+            left: 100%;
         }
 
         .paste-btn:hover {
-            background-color: rgba(0, 212, 170, 0.25);
-            border-color: #00d4aa;
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(167, 139, 250, 0.2));
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.2);
+            transform: translateY(-1px);
         }
 
         .paste-btn:active {
-            transform: scale(0.95);
+            transform: translateY(0) scale(0.98);
         }
 
         .paste-btn svg {
@@ -103,14 +210,30 @@
             height: 14px;
         }
 
+        /* 输入框 */
+        .input-wrapper {
+            position: relative;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: rgba(34, 211, 238, 0.4);
+            box-shadow:
+                0 0 0 3px rgba(34, 211, 238, 0.1),
+                0 0 30px rgba(34, 211, 238, 0.1);
+        }
+
         .input-area {
             width: 100%;
-            min-height: 120px;
-            padding: 14px;
-            background-color: #1a1a24;
-            border: 1px solid #27272a;
-            border-radius: 8px;
-            color: #e4e4e7;
+            min-height: 130px;
+            padding: 16px;
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            color: var(--text-primary);
             font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
             font-size: 13px;
             resize: none;
@@ -119,12 +242,10 @@
 
         .input-area:focus {
             outline: none;
-            border-color: #00d4aa;
-            box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
         }
 
         .input-area::placeholder {
-            color: #52525b;
+            color: var(--text-muted);
         }
 
         .input-area::-webkit-scrollbar {
@@ -136,106 +257,153 @@
         }
 
         .input-area::-webkit-scrollbar-thumb {
-            background: #333;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 3px;
         }
 
         .input-area::-webkit-scrollbar-thumb:hover {
-            background: #444;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .input-area::-webkit-resizer {
             display: none;
         }
 
+        /* 按钮组 */
         .btn-group {
             display: flex;
             gap: 12px;
-            margin-top: 16px;
+            margin-top: 20px;
         }
 
+        /* 生成按钮 */
         .generate-btn {
             flex: 1;
-            height: 48px;
-            background: linear-gradient(135deg, #00d4aa, #6366f1);
+            height: 52px;
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-violet) 100%);
             border: none;
-            border-radius: 8px;
-            color: #0a0a0f;
+            border-radius: 12px;
+            color: #09090b;
             font-family: inherit;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .generate-btn:hover::before {
+            left: 100%;
         }
 
         .generate-btn:hover {
-            transform: scale(1.02);
-            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 30px -10px rgba(34, 211, 238, 0.5),
+                0 0 40px rgba(167, 139, 250, 0.3);
         }
 
         .generate-btn:active {
-            transform: scale(0.98);
+            transform: translateY(0) scale(0.98);
         }
 
+        /* 清空按钮 */
         .clear-btn {
             flex: 0 0 auto;
-            width: 48px;
-            height: 48px;
-            background-color: rgba(239, 68, 68, 0.08);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            border-radius: 8px;
-            color: #71717a;
+            width: 52px;
+            height: 52px;
+            background: rgba(251, 113, 133, 0.08);
+            border: 1px solid rgba(251, 113, 133, 0.15);
+            border-radius: 12px;
+            color: var(--text-muted);
             font-family: inherit;
-            font-size: 14px;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .clear-btn svg {
-            width: 18px;
-            height: 18px;
-            transition: all 0.2s ease;
+            width: 20px;
+            height: 20px;
+            transition: all 0.25s ease;
         }
 
         .clear-btn:hover {
-            background-color: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.4);
-            color: #ef4444;
+            background: rgba(251, 113, 133, 0.15);
+            border-color: rgba(251, 113, 133, 0.3);
+            color: var(--primary-rose);
+            box-shadow: 0 0 20px rgba(251, 113, 133, 0.15);
         }
 
         .clear-btn:hover svg {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(-5deg);
         }
 
         .clear-btn:active {
             transform: scale(0.95);
         }
 
+        /* 结果区域 */
         .result-area {
-            margin-top: 24px;
+            margin-top: 28px;
             display: none;
         }
 
         .result-area.active {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
+        /* 二维码卡片 */
         .qr-item {
-            background-color: #1a1a24;
-            border-radius: 8px;
-            padding: 16px;
+            background: rgba(9, 9, 11, 0.5);
+            border-radius: 16px;
+            padding: 20px;
             margin-bottom: 16px;
-            border: 1px solid #27272a;
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+        }
+
+        .qr-item:hover {
+            border-color: rgba(34, 211, 238, 0.2);
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.3);
         }
 
         .qr-item:last-child {
@@ -246,36 +414,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .qr-index {
             font-size: 12px;
-            color: #00d4aa;
-            font-weight: 500;
+            color: var(--primary-cyan);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .qr-link {
             font-size: 11px;
-            color: #71717a;
+            color: var(--text-muted);
             font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
-            max-width: 200px;
+            max-width: 180px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .qr-link:hover {
-            color: #00d4aa;
+            color: var(--primary-cyan);
+            background: rgba(34, 211, 238, 0.1);
         }
 
+        /* 二维码容器 */
         .qr-wrapper {
             display: flex;
             justify-content: center;
-            padding: 16px;
-            background-color: #ffffff;
-            border-radius: 6px;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            box-shadow:
+                0 0 0 1px rgba(0, 0, 0, 0.05),
+                0 10px 30px -5px rgba(0, 0, 0, 0.1);
         }
 
         .qr-wrapper canvas {
@@ -288,52 +467,75 @@
             display: none !important;
         }
 
-        .download-btn {
-            background-color: rgba(99, 102, 241, 0.1);
-            border-color: rgba(99, 102, 241, 0.3) !important;
-        }
-
-        .download-btn:hover {
-            border-color: #6366f1 !important;
-            color: #6366f1 !important;
-        }
-
+        /* 操作按钮 */
         .qr-actions {
-            margin-top: 12px;
+            margin-top: 16px;
             display: flex;
             justify-content: center;
+            gap: 10px;
         }
 
-        .copy-btn {
-            padding: 6px 16px;
-            background-color: transparent;
-            border: 1px solid #27272a;
-            border-radius: 4px;
-            color: #71717a;
+        .action-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-secondary);
             font-family: inherit;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .copy-btn:hover {
-            border-color: #00d4aa;
-            color: #00d4aa;
+        .action-btn:hover {
+            border-color: rgba(34, 211, 238, 0.3);
+            color: var(--primary-cyan);
+            background: rgba(34, 211, 238, 0.08);
+            transform: translateY(-1px);
         }
 
+        .action-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .action-btn.download {
+            background: rgba(167, 139, 250, 0.05);
+            border-color: rgba(167, 139, 250, 0.15);
+        }
+
+        .action-btn.download:hover {
+            border-color: rgba(167, 139, 250, 0.4);
+            color: var(--primary-violet);
+            background: rgba(167, 139, 250, 0.1);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Toast 提示 */
         .toast {
             position: fixed;
-            top: 24px;
+            top: 28px;
             left: 50%;
             transform: translateX(-50%) translateY(-100px);
-            background-color: #00d4aa;
-            color: #0a0a0f;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 13px;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-violet));
+            color: #09090b;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
+            box-shadow:
+                0 10px 40px -10px rgba(34, 211, 238, 0.5),
+                0 0 60px rgba(167, 139, 250, 0.3);
         }
 
         .toast.show {
@@ -341,41 +543,74 @@
             opacity: 1;
         }
 
-        .empty-tip {
-            text-align: center;
-            color: #52525b;
-            font-size: 13px;
-            padding: 20px;
-        }
-
+        /* 页脚 */
         .footer {
             text-align: center;
-            margin-top: 24px;
-            padding-top: 16px;
-            border-top: 1px solid #27272a;
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-subtle);
         }
 
         .footer p {
             font-size: 12px;
-            color: #52525b;
+            color: var(--text-muted);
         }
 
         .footer a {
-            color: #00d4aa;
+            color: var(--primary-cyan);
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .footer a:hover {
-            color: #6366f1;
+            color: var(--primary-violet);
         }
 
         .github-icon {
             width: 14px;
             height: 14px;
-            margin-right: 4px;
-            vertical-align: middle;
             fill: currentColor;
+        }
+
+        /* 错误状态 */
+        .error-message {
+            color: var(--primary-rose);
+            padding: 24px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .error-message small {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            body {
+                padding: 32px 16px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .qr-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -397,11 +632,12 @@
                     粘贴
                 </button>
             </div>
-            <textarea
-                id="sub-input"
-                class="input-area"
-                placeholder="粘贴 Clash / Surge / Shadowrocket 订阅链接...
-支持多行输入，每行一个链接"></textarea>
+            <div class="input-wrapper">
+                <textarea
+                    id="sub-input"
+                    class="input-area"
+                    placeholder="粘贴 Clash / Surge / Shadowrocket 订阅链接...&#10;支持Enter多行输入，每行一个链接生成多个二维码"></textarea>
+            </div>
             <div class="btn-group">
                 <button class="generate-btn" id="generate-btn">生成二维码</button>
                 <button class="clear-btn" id="clear-btn" title="清空内容">
@@ -420,7 +656,7 @@
         </div>
 
         <footer class="footer">
-            <p>&copy; 2026 <a href="https://github.com/Ekko7778" target="_blank"><svg class="github-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>Ekko</a> · MIT License</p>
+            <p>&copy; 2026 <a href="https://github.com/Ekko7778" target="_blank"><svg class="github-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>Ekko7778</a> · MIT License</p>
         </footer>
     </div>
 
@@ -453,19 +689,33 @@
         function createQRItem(text, index, total) {
             const item = document.createElement('div');
             item.className = 'qr-item';
+            item.style.animationDelay = `${(index - 1) * 0.1}s`;
 
             // 截断显示的链接
-            const displayUrl = text.length > 40 ? text.substring(0, 40) + '...' : text;
+            const displayUrl = text.length > 35 ? text.substring(0, 35) + '...' : text;
 
             item.innerHTML = `
                 <div class="qr-header">
-                    <span class="qr-index">链接 ${index}${total > 1 ? '/' + total : ''}</span>
+                    <span class="qr-index">链接 ${index}${total > 1 ? ' / ' + total : ''}</span>
                     <span class="qr-link" title="${text}">${displayUrl}</span>
                 </div>
                 <div class="qr-wrapper" id="qr-wrapper-${index}"></div>
                 <div class="qr-actions">
-                    <button class="copy-btn">复制链接</button>
-                    <button class="copy-btn download-btn" style="margin-left: 8px;">下载图片</button>
+                    <button class="action-btn copy">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        复制链接
+                    </button>
+                    <button class="action-btn download">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        下载图片
+                    </button>
                 </div>
             `;
 
@@ -494,7 +744,7 @@
                 ctx.fillRect(0, 0, size, size);
 
                 // 绘制二维码模块
-                ctx.fillStyle = '#000000';
+                ctx.fillStyle = '#09090b';
                 for (let row = 0; row < moduleCount; row++) {
                     for (let col = 0; col < moduleCount; col++) {
                         if (qr.isDark(row, col)) {
@@ -506,20 +756,20 @@
                 wrapper.appendChild(canvas);
             } catch (err) {
                 wrapper.innerHTML = `
-                    <div style="color: #ef4444; padding: 20px; text-align: center; font-size: 13px;">
-                        二维码生成失败<br>
-                        <span style="font-size: 11px; color: #71717a;">${err.message || '内容过长或包含不支持的字符'}</span>
+                    <div class="error-message">
+                        二维码生成失败
+                        <small>${err.message || '内容过长或包含不支持的字符'}</small>
                     </div>
                 `;
                 console.error('QRCode generation error:', err);
             }
 
             // 复制按钮事件
-            const copyBtn = item.querySelector('.copy-btn');
+            const copyBtn = item.querySelector('.action-btn.copy');
             copyBtn.addEventListener('click', () => copyToClipboard(text));
 
             // 下载按钮事件
-            const downloadBtn = item.querySelector('.download-btn');
+            const downloadBtn = item.querySelector('.action-btn.download');
             downloadBtn.addEventListener('click', () => {
                 const canvas = wrapper.querySelector('canvas');
                 if (canvas) {
