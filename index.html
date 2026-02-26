@@ -48,6 +48,13 @@
             line-height: 1.6;
             position: relative;
             overflow-x: hidden;
+            scrollbar-gutter: stable;
+        }
+
+        /* 隐藏滚动条但保持滚动功能 */
+        body::-webkit-scrollbar {
+            width: 0;
+            height: 0;
         }
 
         /* 动态背景 */
@@ -640,6 +647,11 @@
             .action-btn {
                 justify-content: center;
             }
+
+            /* 移动端隐藏快捷键提示 */
+            .shortcut-hint {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -853,11 +865,13 @@
             resultArea.innerHTML = '';
             resultArea.classList.add('active');
 
-            // 为每个链接生成二维码
+            // 使用 DocumentFragment 批量插入，减少 DOM 回流
+            const fragment = document.createDocumentFragment();
             links.forEach((link, idx) => {
                 const qrItem = createQRItem(link, idx + 1, links.length);
-                resultArea.appendChild(qrItem);
+                fragment.appendChild(qrItem);
             });
+            resultArea.appendChild(fragment);
         }
 
         btnEl.addEventListener('click', generateQR);
