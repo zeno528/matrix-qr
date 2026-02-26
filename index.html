@@ -678,7 +678,7 @@
                 <textarea
                     id="sub-input"
                     class="input-area"
-                    placeholder="粘贴 Clash/v2rayN/Surge/Shadowrocket 订阅链接...&#10;支持Enter多行输入，每行一个链接生成多个二维码"
+                    placeholder="点击粘贴或Ctrl+V 填入订阅链接...&#10;支持Enter多行输入，每行一个链接生成多个二维码"
                     aria-label="订阅链接输入框"
                     aria-describedby="input-hint"></textarea>
             </div>
@@ -858,7 +858,7 @@
                 }
             });
 
-            // 点击链接也可复制（直接使用已创建的 linkSpan）
+            // 点击链接也可复制
             linkSpan.addEventListener('click', () => copyToClipboard(text));
             // 键盘支持：Enter 键复制
             linkSpan.addEventListener('keydown', (e) => {
