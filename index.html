@@ -450,6 +450,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
+            gap: 12px;
         }
 
         .qr-index {
@@ -458,13 +459,22 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .qr-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
         }
 
         .qr-link {
             font-size: 11px;
             color: var(--text-muted);
             font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
-            max-width: 180px;
+            max-width: 160px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -478,6 +488,38 @@
         .qr-link:hover {
             color: var(--primary-cyan);
             background: rgba(34, 211, 238, 0.1);
+        }
+
+        .download-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .download-btn:hover {
+            border-color: rgba(167, 139, 250, 0.4);
+            color: var(--primary-violet);
+            background: rgba(167, 139, 250, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .download-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .download-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         /* 二维码容器 */
@@ -500,57 +542,6 @@
 
         .qr-wrapper img {
             display: none !important;
-        }
-
-        /* 操作按钮 */
-        .qr-actions {
-            margin-top: 16px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .action-btn {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-subtle);
-            border-radius: 10px;
-            color: var(--text-secondary);
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .action-btn:hover {
-            border-color: rgba(34, 211, 238, 0.3);
-            color: var(--primary-cyan);
-            background: rgba(34, 211, 238, 0.08);
-            transform: translateY(-1px);
-        }
-
-        .action-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .action-btn.download {
-            background: rgba(167, 139, 250, 0.05);
-            border-color: rgba(167, 139, 250, 0.15);
-        }
-
-        .action-btn.download:hover {
-            border-color: rgba(167, 139, 250, 0.4);
-            color: var(--primary-violet);
-            background: rgba(167, 139, 250, 0.1);
-        }
-
-        .action-btn svg {
-            width: 16px;
-            height: 16px;
         }
 
         /* Toast 提示 */
@@ -639,14 +630,6 @@
 
             .header h1 {
                 font-size: 24px;
-            }
-
-            .qr-actions {
-                flex-direction: column;
-            }
-
-            .action-btn {
-                justify-content: center;
             }
 
             /* 移动端隐藏快捷键提示 */
@@ -755,44 +738,40 @@
 
             const linkSpan = document.createElement('span');
             linkSpan.className = 'qr-link';
-            linkSpan.setAttribute('title', text);  // 安全设置属性
+            linkSpan.setAttribute('title', text);
             linkSpan.setAttribute('role', 'button');
             linkSpan.setAttribute('tabindex', '0');
             linkSpan.setAttribute('aria-label', '点击复制链接');
-            linkSpan.textContent = displayUrl;  // 安全设置文本
+            linkSpan.textContent = displayUrl;
+
+            // 右侧区域：链接 + 下载按钮
+            const headerRight = document.createElement('div');
+            headerRight.className = 'qr-header-right';
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'download-btn';
+            downloadBtn.setAttribute('aria-label', '下载二维码图片');
+            downloadBtn.setAttribute('title', '下载二维码');
+            downloadBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+            `;
+
+            headerRight.appendChild(linkSpan);
+            headerRight.appendChild(downloadBtn);
 
             header.appendChild(indexSpan);
-            header.appendChild(linkSpan);
+            header.appendChild(headerRight);
 
             const wrapper = document.createElement('div');
             wrapper.className = 'qr-wrapper';
             wrapper.setAttribute('aria-label', '二维码图片');
 
-            const actions = document.createElement('div');
-            actions.className = 'qr-actions';
-            actions.setAttribute('role', 'group');
-            actions.setAttribute('aria-label', '二维码操作');
-            actions.innerHTML = `
-                <button class="action-btn copy" aria-label="复制链接到剪贴板">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                    复制链接
-                </button>
-                <button class="action-btn download" aria-label="下载二维码图片">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    下载图片
-                </button>
-            `;
-
             item.appendChild(header);
             item.appendChild(wrapper);
-            item.appendChild(actions);
 
             try {
                 // 使用 qrcode-generator 库，支持超长内容
@@ -855,12 +834,7 @@
                 console.error('QRCode generation error:', err);
             }
 
-            // 复制按钮事件
-            const copyBtn = actions.querySelector('.action-btn.copy');
-            copyBtn.addEventListener('click', () => copyToClipboard(text));
-
             // 下载按钮事件
-            const downloadBtn = actions.querySelector('.action-btn.download');
             downloadBtn.addEventListener('click', () => {
                 const canvas = wrapper.querySelector('canvas');
                 if (canvas) {
