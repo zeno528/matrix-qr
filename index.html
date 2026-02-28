@@ -798,8 +798,22 @@
                 // 使用 qrcode-generator 库，支持超长内容
                 // typeNumber: 0 表示自动选择合适的版本
                 // errorCorrectionLevel: 'L' 低纠错级别，容纳更多数据
+                // 'Byte' 模式：支持 UTF-8 编码，正确处理中文等多字节字符
                 const qr = qrcode(0, 'L');
-                qr.addData(text);
+
+                // 将文本转换为 UTF-8 字节数组，确保中文正确编码
+                // 使用 TextEncoder API（现代浏览器均支持）
+                const utf8Encoder = new TextEncoder();
+                const utf8Bytes = utf8Encoder.encode(text);
+
+                // 将字节数组转换为字符串形式传递给二维码库
+                // 每个字节作为一个字符（可能超出 BMP，但 qrcode-generator 能正确处理）
+                let byteString = '';
+                for (let i = 0; i < utf8Bytes.length; i++) {
+                    byteString += String.fromCharCode(utf8Bytes[i]);
+                }
+
+                qr.addData(byteString, 'Byte');
                 qr.make();
 
                 // 创建 canvas 绘制二维码
