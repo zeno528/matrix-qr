@@ -786,19 +786,28 @@
                 const utf8Bytes = utf8Encoder.encode(text);
 
                 // 将字节数组转换为字符串形式传递给二维码库
-                // 每个字节作为一个字符（可能超出 BMP，但 qrcode-generator 能正确处理）
-                let byteString = '';
+                // 使用数组 + join 代替字符串拼接，避免移动端内存问题
+                const byteChars = new Array(utf8Bytes.length);
                 for (let i = 0; i < utf8Bytes.length; i++) {
-                    byteString += String.fromCharCode(utf8Bytes[i]);
+                    byteChars[i] = String.fromCharCode(utf8Bytes[i]);
                 }
+                const byteString = byteChars.join('');
 
                 qr.addData(byteString, 'Byte');
                 qr.make();
 
                 // 创建 canvas 绘制二维码
                 const moduleCount = qr.getModuleCount();
-                const cellSize = Math.max(2, Math.floor(300 / moduleCount));
+                // 移动端优化：提高最小单元格大小，确保二维码清晰可扫描
+                const MAX_SIZE = 300;
+                const MIN_CELL_SIZE = 3;
+                const cellSize = Math.max(MIN_CELL_SIZE, Math.floor(MAX_SIZE / moduleCount));
                 const size = moduleCount * cellSize;
+
+                // Canvas 尺寸保护，防止移动端内存溢出
+                if (size > 4096) {
+                    throw new Error('二维码尺寸超出限制，内容可能过长');
+                }
 
                 const canvas = document.createElement('canvas');
                 canvas.width = size;
