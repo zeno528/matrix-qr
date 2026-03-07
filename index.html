@@ -704,11 +704,19 @@
         const resultArea = document.getElementById('result-area');
         const toast = document.getElementById('toast');
 
+        // Toast 防抖处理：防止快速连续调用时的问题
+        let toastTimer = null;
         function showToast(message) {
+            // 清除之前的定时器，避免 Toast 被提前隐藏
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+                toastTimer = null;
+            }
             toast.textContent = message;
             toast.classList.add('show');
-            setTimeout(() => {
+            toastTimer = setTimeout(() => {
                 toast.classList.remove('show');
+                toastTimer = null;
             }, 2000);
         }
 
