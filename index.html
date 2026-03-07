@@ -569,6 +569,70 @@
             opacity: 1;
         }
 
+        /* 二维码灯罩效果 (Lightbox) */
+        .qr-lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0);
+            backdrop-filter: blur(0);
+            -webkit-backdrop-filter: blur(0);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .qr-lightbox.active {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .qr-lightbox-content {
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
+
+        .qr-lightbox.active .qr-lightbox-content {
+            transform: scale(1);
+        }
+
+        .qr-lightbox-canvas {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 25px 80px -10px rgba(0, 0, 0, 0.6),
+                0 0 120px rgba(34, 211, 238, 0.15),
+                0 0 120px rgba(167, 139, 250, 0.1);
+        }
+
+        .qr-lightbox-canvas canvas {
+            display: block;
+            max-width: 80vw;
+            max-height: 80vh;
+        }
+
+        .qr-lightbox-hint {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
         /* 页脚 */
         .footer {
             text-align: center;
@@ -696,6 +760,14 @@
 
     <div class="toast" id="toast" role="alert" aria-live="polite">已复制到剪贴板</div>
 
+    <!-- 二维码灯罩 (Lightbox) -->
+    <div class="qr-lightbox" id="qr-lightbox" role="dialog" aria-modal="true" aria-label="二维码预览">
+        <div class="qr-lightbox-content">
+            <canvas class="qr-lightbox-canvas" id="lightbox-canvas"></canvas>
+            <p class="qr-lightbox-hint">点击空白处关闭</p>
+        </div>
+    </div>
+
     <!-- qrcode-generator: 支持超长内容的二维码库 -->
     <script src="https://cdn.bootcdn.net/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
     <script>
@@ -727,6 +799,46 @@
                 showToast('复制失败');
             });
         }
+
+        // ========== Lightbox 灯罩效果 ==========
+        const lightbox = document.getElementById('qr-lightbox');
+        const lightboxCanvas = document.getElementById('lightbox-canvas');
+
+        // 打开灯罩
+        function openLightbox(sourceCanvas) {
+            if (!sourceCanvas) return;
+
+            // 复制 canvas 到 lightbox
+            const ctx = lightboxCanvas.getContext('2d');
+            lightboxCanvas.width = sourceCanvas.width;
+            lightboxCanvas.height = sourceCanvas.height;
+            ctx.drawImage(sourceCanvas, 0, 0);
+
+            // 显示 lightbox
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭灯罩
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // 点击背景关闭
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // ESC 键关闭
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+        // ========== Lightbox 结束 ==========
 
         function createQRItem(text, index, total) {
             const item = document.createElement('div');
@@ -837,6 +949,10 @@
                 }
 
                 wrapper.appendChild(canvas);
+
+                // 点击二维码打开灯罩效果
+                canvas.style.cursor = 'zoom-in';
+                canvas.addEventListener('click', () => openLightbox(canvas));
             } catch (err) {
                 // 安全创建错误消息
                 const errorDiv = document.createElement('div');
