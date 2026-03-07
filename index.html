@@ -532,6 +532,17 @@
             box-shadow:
                 0 0 0 1px rgba(0, 0, 0, 0.05),
                 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 二维码 hover 效果：浮起 + 青色发光边框 */
+        .qr-wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 0 0 2px rgba(34, 211, 238, 0.5),
+                0 0 20px rgba(34, 211, 238, 0.15),
+                0 0 40px rgba(34, 211, 238, 0.08),
+                0 20px 40px -10px rgba(0, 0, 0, 0.15);
         }
 
         .qr-wrapper canvas {
@@ -951,7 +962,6 @@
                 wrapper.appendChild(canvas);
 
                 // 点击二维码打开灯罩效果
-                canvas.style.cursor = 'zoom-in';
                 canvas.addEventListener('click', () => openLightbox(canvas));
             } catch (err) {
                 // 安全创建错误消息
