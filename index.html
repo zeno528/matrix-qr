@@ -869,6 +869,8 @@
         /* 模板表单容器 */
         .template-forms {
             position: relative;
+            overflow: hidden;
+            transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .template-form {
@@ -877,18 +879,6 @@
 
         .template-form.active {
             display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         /* 表单组 */
@@ -1286,8 +1276,13 @@
         };
 
         // 标签页切换
+        const formsContainer = document.querySelector('.template-forms');
+
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
+                const newTemplate = btn.dataset.template;
+                if (newTemplate === currentTemplate) return;
+
                 // 更新按钮激活状态
                 document.querySelectorAll('.tab-btn').forEach(b => {
                     b.classList.remove('active');
@@ -1296,12 +1291,29 @@
                 btn.classList.add('active');
                 btn.setAttribute('aria-selected', 'true');
 
-                // 切换表单
-                currentTemplate = btn.dataset.template;
+                // 获取当前高度并固定
+                const currentHeight = formsContainer.offsetHeight;
+                formsContainer.style.height = currentHeight + 'px';
+
+                // 隐藏当前表单
                 document.querySelectorAll('.template-form').forEach(form => {
                     form.classList.remove('active');
                 });
-                document.getElementById(`form-${currentTemplate}`).classList.add('active');
+
+                // 显示新表单
+                const newForm = document.getElementById(`form-${newTemplate}`);
+                newForm.classList.add('active');
+
+                // 动画过渡到新高度
+                const newHeight = newForm.offsetHeight;
+                formsContainer.style.height = newHeight + 'px';
+
+                // 过渡结束后恢复 auto
+                setTimeout(() => {
+                    formsContainer.style.height = 'auto';
+                }, 300);
+
+                currentTemplate = newTemplate;
             });
         });
 
