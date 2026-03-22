@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  SubQR Hub - 订阅链接二维码生成器
+  SubQR Hub - 通用二维码生成器
   Copyright (c) 2026 Ekko (Ekko7778)
   Licensed under the MIT License
   https://github.com/Ekko7778/qrcode-generator
@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SubQR Hub - 订阅链接二维码生成器</title>
+    <title>SubQR Hub - 通用二维码生成器</title>
     <!-- Favicon - QR Code Style -->
     <link rel="icon" type="image/svg+xml" href="qr.svg">
     <link rel="preconnect" href="https://fonts.loli.net">
@@ -720,6 +720,76 @@
             color: var(--primary-violet);
         }
 
+        /* 安全提示区域 */
+        .security-notice {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: rgba(34, 211, 238, 0.06);
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .security-notice svg {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--primary-cyan);
+            margin-top: 1px;
+        }
+
+        .security-notice-content {
+            flex: 1;
+        }
+
+        .security-notice-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-cyan);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .security-notice-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .security-notice-desc strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .security-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .security-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .security-tag svg {
+            width: 12px;
+            height: 12px;
+            color: var(--primary-cyan);
+        }
+
         .github-icon {
             width: 14px;
             height: 14px;
@@ -742,6 +812,184 @@
             margin-top: 6px;
         }
 
+        /* 模板标签页 */
+        .template-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transition: left 0.4s ease;
+        }
+
+        .tab-btn:hover::before {
+            left: 100%;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(167, 139, 250, 0.12));
+            border-color: rgba(34, 211, 238, 0.25);
+            color: var(--primary-cyan);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+        }
+
+        /* 模板表单容器 */
+        .template-forms {
+            position: relative;
+        }
+
+        .template-form {
+            display: none;
+        }
+
+        .template-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 表单组 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.25s ease;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: rgba(34, 211, 238, 0.4);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .form-group select option {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+            font-family: "JetBrains Mono", "Fira Code", "Consolas", monospace;
+            font-size: 13px;
+        }
+
+        /* 密码输入框容器 */
+        .input-with-toggle {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-with-toggle input {
+            padding-right: 44px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--text-secondary);
+        }
+
+        .toggle-password svg {
+            width: 18px;
+            height: 18px;
+        }
+
         /* 响应式 */
         @media (max-width: 480px) {
             body {
@@ -756,6 +1004,19 @@
                 font-size: 24px;
             }
 
+            .security-notice {
+                flex-direction: column;
+                padding: 14px 16px;
+            }
+
+            .security-notice svg {
+                margin-bottom: 4px;
+            }
+
+            .security-features {
+                justify-content: flex-start;
+            }
+
             /* 移动端隐藏快捷键提示 */
             .shortcut-hint {
                 display: none;
@@ -767,35 +1028,114 @@
     <div class="container">
         <div class="header">
             <h1>SubQR Hub</h1>
-            <p>支持 Clash / v2rayN / Surge / Shadowrocket / Quantumult</p>
+            <p>文本 · WiFi · 邮件 · 短信</p>
         </div>
 
         <div class="card">
-            <div class="input-label">
-                <span id="input-label-text">订阅链接</span>
-                <button class="paste-btn" id="paste-btn" title="从剪贴板粘贴" aria-label="从剪贴板粘贴">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                        <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                    </svg>
-                    粘贴
+            <!-- 模板标签页 -->
+            <div class="template-tabs" role="tablist" aria-label="选择二维码类型">
+                <button class="tab-btn active" data-template="text" role="tab" aria-selected="true" aria-controls="form-text">
+                    <span>📝</span> 文本
+                </button>
+                <button class="tab-btn" data-template="wifi" role="tab" aria-selected="false" aria-controls="form-wifi">
+                    <span>📶</span> WiFi
+                </button>
+                <button class="tab-btn" data-template="email" role="tab" aria-selected="false" aria-controls="form-email">
+                    <span>📧</span> 邮件
+                </button>
+                <button class="tab-btn" data-template="sms" role="tab" aria-selected="false" aria-controls="form-sms">
+                    <span>📱</span> 短信
                 </button>
             </div>
-            <div class="input-wrapper">
-                <textarea
-                    id="sub-input"
-                    class="input-area"
-                    placeholder="点击粘贴或Ctrl+V 填入订阅链接...&#10;支持Enter多行输入，每行一个链接生成多个二维码"
-                    aria-label="订阅链接输入框"
-                    aria-describedby="input-hint"></textarea>
+
+            <!-- 模板表单容器 -->
+            <div class="template-forms">
+                <!-- WiFi 表单 -->
+                <div class="template-form" id="form-wifi" role="tabpanel" aria-labelledby="tab-wifi">
+                    <div class="form-group">
+                        <label for="wifi-ssid">网络名称 (SSID)</label>
+                        <input type="text" id="wifi-ssid" placeholder="例如: MyWiFi" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifi-password">密码</label>
+                        <div class="input-with-toggle">
+                            <input type="password" id="wifi-password" placeholder="WiFi 密码" autocomplete="off">
+                            <button type="button" class="toggle-password" aria-label="显示密码" data-target="wifi-password">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="wifi-encryption">加密类型</label>
+                        <select id="wifi-encryption">
+                            <option value="WPA">WPA/WPA2/WPA3</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">无密码</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 邮件表单 -->
+                <div class="template-form" id="form-email" role="tabpanel" aria-labelledby="tab-email">
+                    <div class="form-group">
+                        <label for="email-to">收件邮箱 *</label>
+                        <input type="email" id="email-to" placeholder="例如: recipient@email.com" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-subject">主题</label>
+                        <input type="text" id="email-subject" placeholder="邮件主题" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-body">正文</label>
+                        <textarea id="email-body" placeholder="邮件内容..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- 短信表单 -->
+                <div class="template-form" id="form-sms" role="tabpanel" aria-labelledby="tab-sms">
+                    <div class="form-group">
+                        <label for="sms-number">收件号码 *</label>
+                        <input type="tel" id="sms-number" placeholder="例如: 13800138000" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="sms-message">短信内容</label>
+                        <textarea id="sms-message" placeholder="短信内容..." rows="3"></textarea>
+                    </div>
+                </div>
+
+                <!-- 文本表单 -->
+                <div class="template-form active" id="form-text" role="tabpanel" aria-labelledby="tab-text">
+                    <div class="input-label">
+                        <span>文本内容</span>
+                        <button class="paste-btn" id="paste-btn" title="从剪贴板粘贴" aria-label="从剪贴板粘贴">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            粘贴
+                        </button>
+                    </div>
+                    <div class="input-wrapper">
+                        <textarea
+                            id="sub-input"
+                            class="input-area"
+                            placeholder="输入任意文本或链接...&#10;支持多行输入，每行生成一个二维码"
+                            aria-label="文本输入框"
+                            aria-describedby="input-hint"></textarea>
+                    </div>
+                    <div class="shortcut-hint" id="input-hint">
+                        <span>快捷键：</span>
+                        <kbd>Ctrl</kbd>
+                        <span>+</span>
+                        <kbd>Enter</kbd>
+                        <span>生成二维码</span>
+                    </div>
+                </div>
             </div>
-            <div class="shortcut-hint" id="input-hint">
-                <span>快捷键：</span>
-                <kbd>Ctrl</kbd>
-                <span>+</span>
-                <kbd>Enter</kbd>
-                <span>生成二维码</span>
-            </div>
+
             <div class="btn-group" role="group" aria-label="操作按钮">
                 <button class="generate-btn" id="generate-btn" aria-label="生成二维码">生成二维码</button>
                 <button class="clear-btn" id="clear-btn" title="清空内容" aria-label="清空所有内容">
@@ -814,6 +1154,40 @@
         </div>
 
         <footer class="footer">
+            <!-- 安全提示 -->
+            <div class="security-notice">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                <div class="security-notice-content">
+                    <div class="security-notice-title">
+                        100% 本地处理，零数据上传
+                    </div>
+                    <div class="security-notice-desc">
+                        所有二维码在<strong>您的浏览器本地生成</strong>，无需服务器，无数据收集，无追踪。您的隐私数据永远不会离开您的设备。
+                    </div>
+                    <div class="security-features">
+                        <span class="security-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            无需注册
+                        </span>
+                        <span class="security-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            纯离线可用
+                        </span>
+                        <span class="security-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            开源代码
+                        </span>
+                        <span class="security-tag">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                            无数据上传
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <p>&copy; 2026 <a href="https://github.com/Ekko7778" target="_blank"><svg class="github-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>Ekko7778</a> · MIT License</p>
         </footer>
     </div>
@@ -835,6 +1209,148 @@
         const btnEl = document.getElementById('generate-btn');
         const resultArea = document.getElementById('result-area');
         const toast = document.getElementById('toast');
+
+        // ========== 模板系统 ==========
+        let currentTemplate = 'text';
+
+        // 特殊字符转义（WiFi 格式）
+        function escapeWifi(str) {
+            if (!str) return '';
+            return str.replace(/\\/g, '\\\\')
+                      .replace(/;/g, '\\;')
+                      .replace(/,/g, '\\,')
+                      .replace(/:/g, '\\:');
+        }
+
+        // MECARD 格式转义
+        function escapeMecard(str) {
+            if (!str) return '';
+            return str.replace(/\\/g, '\\\\')
+                      .replace(/"/g, '\\"')
+                      .replace(/;/g, '\\;')
+                      .replace(/:/g, '\\:')
+                      .replace(/,/g, '\\,');
+        }
+
+        // 模板数据生成器
+        const templateGenerators = {
+            wifi: () => {
+                const ssid = document.getElementById('wifi-ssid').value.trim();
+                const password = document.getElementById('wifi-password').value;
+                const encryption = document.getElementById('wifi-encryption').value;
+
+                if (!ssid) return null;
+
+                if (encryption === 'nopass') {
+                    return `WIFI:T:nopass;S:${escapeWifi(ssid)};;`;
+                }
+                return `WIFI:T:${encryption};S:${escapeWifi(ssid)};P:${escapeWifi(password)};;`;
+            },
+
+            email: () => {
+                const to = document.getElementById('email-to').value.trim();
+                const subject = document.getElementById('email-subject').value.trim();
+                const body = document.getElementById('email-body').value.trim();
+
+                if (!to) return null;
+
+                let mailto = `mailto:${to}`;
+                const params = [];
+                if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
+                if (body) params.push(`body=${encodeURIComponent(body)}`);
+                if (params.length) mailto += '?' + params.join('&');
+
+                return mailto;
+            },
+
+            sms: () => {
+                const number = document.getElementById('sms-number').value.trim();
+                const message = document.getElementById('sms-message').value.trim();
+
+                if (!number) return null;
+
+                return `smsto:${number}:${message}`;
+            },
+
+            text: () => {
+                return inputEl.value.trim();
+            }
+        };
+
+        // 获取模板显示名称
+        const templateNames = {
+            wifi: 'WiFi',
+            email: '邮件',
+            sms: '短信',
+            text: '文本'
+        };
+
+        // 标签页切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 更新按钮激活状态
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-selected', 'false');
+                });
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+
+                // 切换表单
+                currentTemplate = btn.dataset.template;
+                document.querySelectorAll('.template-form').forEach(form => {
+                    form.classList.remove('active');
+                });
+                document.getElementById(`form-${currentTemplate}`).classList.add('active');
+            });
+        });
+
+        // 密码显示/隐藏切换
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target;
+                const input = document.getElementById(targetId);
+                const isPassword = input.type === 'password';
+
+                input.type = isPassword ? 'text' : 'password';
+                btn.setAttribute('aria-label', isPassword ? '隐藏密码' : '显示密码');
+
+                // 切换图标
+                btn.innerHTML = isPassword
+                    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                       </svg>`
+                    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                       </svg>`;
+            });
+        });
+
+        // 清空当前表单
+        function clearCurrentForm() {
+            switch (currentTemplate) {
+                case 'wifi':
+                    document.getElementById('wifi-ssid').value = '';
+                    document.getElementById('wifi-password').value = '';
+                    document.getElementById('wifi-encryption').value = 'WPA';
+                    break;
+                case 'email':
+                    document.getElementById('email-to').value = '';
+                    document.getElementById('email-subject').value = '';
+                    document.getElementById('email-body').value = '';
+                    break;
+                case 'sms':
+                    document.getElementById('sms-number').value = '';
+                    document.getElementById('sms-message').value = '';
+                    break;
+                case 'text':
+                    inputEl.value = '';
+                    break;
+            }
+        }
+        // ========== 模板系统结束 ==========
 
         // Toast 防抖处理：防止快速连续调用时的问题
         let toastTimer = null;
@@ -900,12 +1416,21 @@
         });
         // ========== Lightbox 结束 ==========
 
-        function createQRItem(text, index, total) {
+        function createQRItem(text, index, total, templateType = 'text') {
             const item = document.createElement('div');
             item.className = 'qr-item';
             item.style.animationDelay = `${(index - 1) * 0.1}s`;
 
-            // 截断显示的链接
+            // 根据模板类型生成显示文本
+            const templateLabels = {
+                wifi: 'WiFi',
+                email: '邮件',
+                sms: '短信',
+                text: '内容'
+            };
+            const label = templateLabels[templateType] || '内容';
+
+            // 截断显示的内容
             const displayUrl = text.length > 35 ? text.substring(0, 35) + '...' : text;
 
             // 使用安全的 DOM 操作，避免 XSS
@@ -914,14 +1439,14 @@
 
             const indexSpan = document.createElement('span');
             indexSpan.className = 'qr-index';
-            indexSpan.textContent = `链接 ${index}${total > 1 ? ' / ' + total : ''}`;
+            indexSpan.textContent = `${label} ${index}${total > 1 ? ' / ' + total : ''}`;
 
             const linkSpan = document.createElement('span');
             linkSpan.className = 'qr-link';
             linkSpan.setAttribute('title', text);
             linkSpan.setAttribute('role', 'button');
             linkSpan.setAttribute('tabindex', '0');
-            linkSpan.setAttribute('aria-label', '点击复制链接');
+            linkSpan.setAttribute('aria-label', '点击复制内容');
             linkSpan.textContent = displayUrl;
 
             // 右侧区域：链接 + 下载按钮
@@ -1052,18 +1577,18 @@
         }
 
         function generateQR() {
-            const text = inputEl.value.trim();
+            // 使用模板生成器获取内容
+            const generator = templateGenerators[currentTemplate];
+            const content = generator ? generator() : null;
 
-            if (!text) {
-                showToast('请输入订阅链接');
-                return;
-            }
-
-            // 分割多行
-            const links = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
-            if (links.length === 0) {
-                showToast('请输入有效的链接');
+            if (!content) {
+                const errorMsg = {
+                    wifi: '请输入网络名称',
+                    email: '请输入收件邮箱',
+                    sms: '请输入收件号码',
+                    text: '请输入文本内容'
+                };
+                showToast(errorMsg[currentTemplate] || '请填写必要信息');
                 return;
             }
 
@@ -1071,13 +1596,25 @@
             resultArea.innerHTML = '';
             resultArea.classList.add('active');
 
-            // 使用 DocumentFragment 批量插入，减少 DOM 回流
-            const fragment = document.createDocumentFragment();
-            links.forEach((link, idx) => {
-                const qrItem = createQRItem(link, idx + 1, links.length);
-                fragment.appendChild(qrItem);
-            });
-            resultArea.appendChild(fragment);
+            // 文本模板支持多行
+            if (currentTemplate === 'text') {
+                const lines = content.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                if (lines.length === 0) {
+                    showToast('请输入有效的文本');
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+                lines.forEach((line, idx) => {
+                    const qrItem = createQRItem(line, idx + 1, lines.length, 'text');
+                    fragment.appendChild(qrItem);
+                });
+                resultArea.appendChild(fragment);
+            } else {
+                // 其他模板生成单个二维码
+                const qrItem = createQRItem(content, 1, 1, currentTemplate);
+                resultArea.appendChild(qrItem);
+            }
         }
 
         btnEl.addEventListener('click', generateQR);
@@ -1085,10 +1622,14 @@
         // 清空按钮
         const clearBtnEl = document.getElementById('clear-btn');
         clearBtnEl.addEventListener('click', () => {
-            inputEl.value = '';
+            clearCurrentForm();
             resultArea.innerHTML = '';
             resultArea.classList.remove('active');
-            inputEl.focus();
+
+            // 聚焦到当前表单的第一个输入框
+            const currentForm = document.getElementById(`form-${currentTemplate}`);
+            const firstInput = currentForm.querySelector('input, textarea');
+            if (firstInput) firstInput.focus();
         });
 
         // 支持 Ctrl+Enter 提交
