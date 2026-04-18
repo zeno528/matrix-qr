@@ -1019,7 +1019,7 @@
     <div class="container">
         <div class="header">
             <h1>Matrix QR</h1>
-            <p>文本 · WiFi · 邮件 · 短信</p>
+            <p>文本 · WiFi · 短信</p>
         </div>
 
         <div class="card">
@@ -1030,9 +1030,6 @@
                 </button>
                 <button class="tab-btn" data-template="wifi" role="tab" aria-selected="false" aria-controls="form-wifi">
                     <span>📶</span> WiFi
-                </button>
-                <button class="tab-btn" data-template="email" role="tab" aria-selected="false" aria-controls="form-email">
-                    <span>📧</span> 邮件
                 </button>
                 <button class="tab-btn" data-template="sms" role="tab" aria-selected="false" aria-controls="form-sms">
                     <span>📱</span> 短信
@@ -1069,21 +1066,6 @@
                     </div>
                 </div>
 
-                <!-- 邮件表单 -->
-                <div class="template-form" id="form-email" role="tabpanel" aria-labelledby="tab-email">
-                    <div class="form-group">
-                        <label for="email-to">收件邮箱 *</label>
-                        <input type="email" id="email-to" placeholder="例如: recipient@email.com" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="email-subject">主题</label>
-                        <input type="text" id="email-subject" placeholder="邮件主题" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="email-body">正文</label>
-                        <textarea id="email-body" placeholder="邮件内容..." rows="3"></textarea>
-                    </div>
-                </div>
 
                 <!-- 短信表单 -->
                 <div class="template-form" id="form-sms" role="tabpanel" aria-labelledby="tab-sms">
@@ -1238,23 +1220,7 @@
                 return `WIFI:T:${encryption};S:${escapeWifi(ssid)};P:${escapeWifi(password)};;`;
             },
 
-            email: () => {
-                const to = document.getElementById('email-to').value.trim();
-                const subject = document.getElementById('email-subject').value.trim();
-                const body = document.getElementById('email-body').value.trim();
-
-                if (!to) return null;
-
-                let mailto = `mailto:${to}`;
-                const params = [];
-                if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
-                if (body) params.push(`body=${encodeURIComponent(body)}`);
-                if (params.length) mailto += '?' + params.join('&');
-
-                return mailto;
-            },
-
-            sms: () => {
+sms: () => {
                 const number = document.getElementById('sms-number').value.trim();
                 const message = document.getElementById('sms-message').value.trim();
 
@@ -1271,7 +1237,6 @@
         // 获取模板显示名称
         const templateNames = {
             wifi: 'WiFi',
-            email: '邮件',
             sms: '短信',
             text: '文本'
         };
@@ -1348,11 +1313,6 @@
                     document.getElementById('wifi-ssid').value = '';
                     document.getElementById('wifi-password').value = '';
                     document.getElementById('wifi-encryption').value = 'WPA';
-                    break;
-                case 'email':
-                    document.getElementById('email-to').value = '';
-                    document.getElementById('email-subject').value = '';
-                    document.getElementById('email-body').value = '';
                     break;
                 case 'sms':
                     document.getElementById('sms-number').value = '';
@@ -1437,7 +1397,6 @@
             // 根据模板类型生成显示文本
             const templateLabels = {
                 wifi: 'WiFi',
-                email: '邮件',
                 sms: '短信',
                 text: '内容'
             };
@@ -1597,7 +1556,6 @@
             if (!content) {
                 const errorMsg = {
                     wifi: '请输入网络名称',
-                    email: '请输入收件邮箱',
                     sms: '请输入收件号码',
                     text: '请输入文本内容'
                 };
