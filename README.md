@@ -1,4 +1,4 @@
-# SubQR Hub
+# Matrix QR
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Deployed-success?style=flat-square&logo=github)](https://ekko7778.github.io/qrcode-generator/)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
@@ -27,7 +27,7 @@
 
 ## 使用方法
 
-1. 打开 [SubQR Hub](https://ekko7778.github.io/qrcode-generator/)
+1. 打开 [Matrix QR](https://ekko7778.github.io/qrcode-generator/)
 2. 选择模板类型（WiFi / 邮件 / 短信 / 文本）
 3. 填写对应信息
 4. 点击「生成二维码」按钮
